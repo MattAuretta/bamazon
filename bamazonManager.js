@@ -50,7 +50,7 @@ function runManager() {
 };
 
 function viewProducts() {
-    console.log("---------------------\nAll the products for sale:\n");
+    console.log("---------------------\nAll products for sale:\n");
     //Query to database to get info for all items
     var query = "SELECT item_id, product_name, price, stock_quantity FROM products";
     connection.query(query, function (err, response) {
@@ -64,3 +64,18 @@ function viewProducts() {
         runManager();
     });
 };
+
+function viewLowInventory() {
+    console.log("---------------------\nAll items with a low inventory:\n");
+    var query = "SELECT item_id, product_name, stock_quantity FROM products WHERE stock_quantity < 5";
+    connection.query(query, function (err, response) {
+        //Loop through each item
+        for (var i = 0; i < response.length; i++) {
+            //Log each item name and quantity
+            console.log("Item ID: " + response[i].item_id + " || Product: " + response[i].product_name + " || Quantity: " + response[i].stock_quantity);
+        };
+        console.log("\n---------------------\n");
+        //Run main function again
+        runManager();
+    });
+}
