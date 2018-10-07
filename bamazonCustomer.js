@@ -65,7 +65,7 @@ function purchaseItems() {
                         return true;
                     };
                     return false;
-                };
+                }
             }
         ])
         .then(function (answer) {
