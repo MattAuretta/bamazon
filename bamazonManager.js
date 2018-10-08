@@ -110,15 +110,64 @@ function addInventory() {
                     item_id: answer.id
                 },
                 function (err, response) {
-                        //Variable to hold logic for updated stock
-                        var updateStock = parseInt(response[0].stock_quantity) + parseInt(answer.units);
-                        //Update stock quantity in database
-                        connection.query("UPDATE products SET stock_quantity = " + updateStock + " WHERE ?", {
-                            item_id: answer.id
-                        });
-                        //Display total cost
-                        console.log("\nYour updated inventory of " + response[0].product_name + " is: " + updateStock + "\n");
-                        runManager();
+                    //Variable to hold logic for updated stock
+                    var updateStock = parseInt(response[0].stock_quantity) + parseInt(answer.units);
+                    //Update stock quantity in database
+                    connection.query("UPDATE products SET stock_quantity = " + updateStock + " WHERE ?", {
+                        item_id: answer.id
+                    });
+                    //Display total cost
+                    console.log("\nYour updated inventory of " + response[0].product_name + " is: " + updateStock + "\n");
+                    runManager();
                 });
         });
-}
+};
+
+function addProduct() {
+    inquirer
+        .prompt([{
+                name: "product",
+                type: "input",
+                message: "Enter the name of the product you wish to add: "
+            },
+            {
+                name: "department",
+                type: "input",
+                message: "Enter the name of the department for this product: "
+            },
+            {
+                name: "price",
+                type: "input",
+                message: "Enter the price of this product: ",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    };
+                    return false;
+                }
+            },
+            {
+                name: "quantity",
+                type: "input",
+                message: "Enter the number of units you wish to add to the inventory: ",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    };
+                    return false;
+                }
+            }
+        ]).then(function (answer) {
+            //Query to database to insert new product
+            var query = "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ( '" + answer.product + "', '" + answer.department + "', " + answer.price + ", " + answer.quantity + ")";
+            connection.query(query, function(err, response){
+                if(response){
+                    console.log("\nYou've successfully added " + answer.product + " to your available products.\n");
+                    runManager();
+                } else {
+                    console.log("Invalid parameters, try again.");
+                    runManager();
+                }
+            });
+        });
+};
