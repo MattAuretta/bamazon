@@ -70,10 +70,10 @@ function purchaseItems() {
         ])
         .then(function (answer) {
             //Query to database to get specific item info
-            var query = "SELECT item_id, stock_quantity, price FROM products WHERE ?";
+            var query = "SELECT item_id, stock_quantity, price, product_sales FROM products WHERE ?";
             connection.query(query, {
-                        item_id: answer.id
-                    },
+                    item_id: answer.id
+                },
                 function (err, response) {
                     //If requested units is more than stock quantity
                     if (response[0].stock_quantity < answer.units) {
@@ -84,10 +84,15 @@ function purchaseItems() {
                         var updateStock = response[0].stock_quantity - answer.units
                         //Update stock quantity in database
                         connection.query("UPDATE products SET stock_quantity = " + updateStock + " WHERE ?", {
-                                item_id: answer.id
-                            });
+                            item_id: answer.id
+                        });
+                        //Update product_sales column
+                        var productSales = response[0].price * answer.units;
+                        connection.query("UPDATE products SET product_sales = product_sales + " + productSales + " WHERE ?", {
+                            item_id: answer.id
+                        });
                         //Display total cost
-                        console.log("Your order total is: $" + (answer.units * response[0].price));
+                        console.log("Your order total is: $" + productSales);
                         console.log("---------------------")
                         runApp();
                     };
