@@ -22,12 +22,14 @@ ALTER TABLE products
 MODIFY product_sales DECIMAL(10,2) DEFAULT "0.00";
 
 SELECT * FROM products;
+SELECT * FROM departments;
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("Loose Herbal Tea", "Grocery", 7.99, 30);
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Sporting Goods", 3000);
 
 DELETE FROM products WHERE product_name = "Loose Herbal Tea";
 
 UPDATE products
 SET price = 2.99
 WHERE product_name = "Herbal Tea";
+
