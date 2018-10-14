@@ -63,5 +63,35 @@ function viewByDepartment() {
 
 
 function createDepartment() {
-
+    inquirer
+        .prompt([{
+                name: "name",
+                type: "input",
+                message: "Enter the name of the department you wish to add: "
+            },
+            {
+                name: "overhead",
+                type: "input",
+                message: "Enter the over head costs of this department: ",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    };
+                    return false;
+                }
+            }
+        ]).then(function (answer) {
+            //Query to database to insert new product
+            var query = "INSERT INTO departments (department_name, over_head_costs) VALUES ( '" + answer.name + "', " + answer.overhead + ")";
+            connection.query(query, function(err, response){
+                if(response){
+                    console.log("\nYou've successfully added " + answer.name + " to your current departments.\n");
+                    runSupervisor();
+                } else {
+                    console.log("Invalid parameters, try again.");
+                    runSupervisor();
+                }
+            });
+        });
+ 
 };
