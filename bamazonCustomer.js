@@ -1,6 +1,7 @@
 //Require npm packages
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require("cli-table");
 
 //Create connection to MySQL database
 var connection = mysql.createConnection({
@@ -27,12 +28,16 @@ function runApp() {
             //Query to database to get all item info
             var query = "SELECT item_id, product_name, price FROM products";
             connection.query(query, function (err, response) {
+                var table = new Table({
+                    head: ["Product Id", "Product Name", "Price"],
+                    colWidths: [20, 20, 20]
+                });
                 //Loop through response
                 for (var i = 0; i < response.length; i++) {
                     //Log each item id, name, and price
-                    console.log("Item ID: " + response[i].item_id + "    Product: " + response[i].product_name + "    Price: $" + response[i].price);
+                    table.push([response[i].item_id, response[i].product_name, "$" + response[i].price]);
                 }
-                console.log("---------------------")
+                console.log("\n" + table.toString() + "\n");
                 //Run function that asks what customer wants to purchase
                 purchaseItems();
             });
