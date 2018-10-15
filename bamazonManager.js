@@ -1,6 +1,7 @@
 //Require npm packages
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require("cli-table");
 
 //Create connection to MySQL database
 var connection = mysql.createConnection({
@@ -50,16 +51,20 @@ function runManager() {
 };
 
 function viewProducts() {
-    console.log("---------------------\nAll products for sale:\n");
+    console.log("---------------------\nAll products for sale:");
     //Query to database to get info for all items
     var query = "SELECT item_id, product_name, price, stock_quantity FROM products";
     connection.query(query, function (err, response) {
+        var table = new Table ({
+            head: ["Product Id", "Product Name", "Price", "Stock Quantity"],
+            colWidths: [20, 20, 20, 20]
+        });
         //Loop through each item
         for (var i = 0; i < response.length; i++) {
             //Log each item id, name, price, and quantity
-            console.log("Item ID: " + response[i].item_id + " || Product: " + response[i].product_name + " || Price: $" + response[i].price + " || Quantity: " + response[i].stock_quantity);
+            table.push([response[i].item_id, response[i].product_name, "$" + response[i].price, response[i].stock_quantity]);
         };
-        console.log("\n---------------------\n");
+        console.log("\n" + table.toString() + "\n");
         //Run main function again
         runManager();
     });
@@ -68,13 +73,17 @@ function viewProducts() {
 function viewLowInventory() {
     console.log("---------------------\nAll items with a low inventory:\n");
     var query = "SELECT item_id, product_name, stock_quantity FROM products WHERE stock_quantity < 5";
+    var table = new Table ({
+            head: ["Product Id", "Product Name", "Stock Quantity"],
+            colWidths: [20, 20, 20]
+        });
     connection.query(query, function (err, response) {
         //Loop through each item
         for (var i = 0; i < response.length; i++) {
             //Log each item id, name, and quantity
-            console.log("Item ID: " + response[i].item_id + " || Product: " + response[i].product_name + " || Quantity: " + response[i].stock_quantity);
+            table.push([response[i].item_id, response[i].product_name, response[i].stock_quantity]);
         };
-        console.log("\n---------------------\n");
+        console.log("\n" + table.toString() + "\n");
         //Run main function again
         runManager();
     });
