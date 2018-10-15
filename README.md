@@ -39,3 +39,6 @@ The Supervisor interface utilizes the *products* and *departments* tables togeth
   - A prompt will ask the user the name of the new department they wish to add to the *departments* table as well as the over head costs for that department.
   
 Entering `node bamazonSupervisor.js` in your terminal will run this application.
+
+## Demo
+Click [here](https://drive.google.com/file/d/1x468ELJINY906NtksVqVjJJbKnLVIg78/view) for a video demo of this application. Please download or watch in full screen on 1080p in order to see the text.
